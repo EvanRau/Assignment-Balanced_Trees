@@ -29,41 +29,41 @@ class HawaiianDictionary:
         return "Saying not in Dictionary"
     
     def first(self):
-        if self.sayings:
+        if self.sayings:            #returns first saying in dictionarty so long as there is at least 1 entry
             return self.sayings[0]
         return "Dictionary Empty"
     
     def last(self):
-        if self.sayings:
+        if self.sayings:            #returns last saying in dictionarty so long as there is at least 1 entry
             return self.sayings[-1]
         return "Dictionary empty"
     
     def predecessor(self, saying):
-        index = self.find_index(saying)
-        if index == -1:
+        index = self.find_index(saying) #finds index for saying
+        if index == -1: #saying is not in dict
             return "Saying not in dictionary"
-        elif index > 0:
+        elif index > 0: #saying in dictionary with predecessor
             return self.sayings[index - 1]
-        else:
+        else: #saying in dictionary but no predecessor
             return "First entry in dictionary; no predecessor"
 
     def successor(self, saying):
         index = self.find_index(saying)
-        if index == -1:
+        if index == -1: #saying is not in dict
             return "Saying not in dictionary"
-        elif index < len(self.sayings) - 1:
+        elif index < len(self.sayings) - 1: #saying in dictionary with successor
             return self.sayings[index + 1]
-        else:
+        else: #saying in dictionary but no successor
             return "Last entry in dictionary; no successor"
     
     def insert(self, saying, translation, explanation_non_english, explanation_english):
-        new_saying = {
+        new_saying = { #sort components of new dictionary entry for insertion into list
             'saying': saying,
             'translation': translation,
             'explanation_non_english': explanation_non_english,
             'explanation_english': explanation_english
         }
-        index = self.find_index(saying)
+        index = self.find_index(saying) #find sorted index for new entry
         if index < len(self.sayings) and self.sayings[index]['saying'] == saying:
             # Update existing saying
             self.sayings[index] = new_saying
@@ -77,12 +77,21 @@ class HawaiianDictionary:
             return
         
         print("===== Hawaiian Sayings Dictionary =====")
-        for index, saying in enumerate(self.sayings, start=1):
+        for index, saying in enumerate(self.sayings, start=1): #Iterate through dictionary
             print(f"   Saying: {saying['saying']}")
             print(f"   Translation: {saying['translation']}")
             print(f"   Explanation (Hawaiian): {saying['explanation_non_english']}")
             print(f"   Explanation (English): {saying['explanation_english']}")
             print()
+
+
+    ### MeHua and WithWord programmed by Yuzuki Fujimoto
+    ### @todo complete code with explanations
+    def MeHua(self, word):
+        return None
+    
+    def WithWord(self, word):
+        return None
 
 
 
