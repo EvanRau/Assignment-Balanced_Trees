@@ -6,101 +6,101 @@ import bisect
 
 ###  Evan Rau
 # For this assignment, we chose to use a python dictionary to implement the database, which itself is an implementation of a hash table.
-# Hash tables are extremely efficient for single-entry lookups, and there are imports, such as bisect that allow you to sort entries in the database.
-# In this context, bisect is using a kind of binary sort so that sorted order is maintained with each insertion into the list.
+# Hash tables are extremely efficient for single-entry lookups, providing an average complexity of O(1) so long as each key has its own hash in the table. 
+# In a worst case scenario, every key is placed on the same hash, which effectively turns the dictionary into an array, giving a worst case complexity of O(n)
+# see the following link for more information on python dicts https://docs.python.org/3/tutorial/datastructures.html#dictionaries
+# In addtion to the dictionary, we also keep a sorted list of its keys that we update with each insertion. Doing this allows us to improve time complexity for first(), last(), predecessor(),
+# successor(), and listAllSayings at the cost of slowing down insert(). This improves the time complexity of first() and last() to O(1), list_all_sayings() to O(n), and predecessor() and successor() to O(logn)
+# consequently, insert()'s time complextiy goes up from O(1) to O(logn) since it has to utilize bisect's functions.
+# Additionally, bisect is used in predecessor and successor in order to determine where its key exists in the sorted list of entries, allowing for us to locate the key pairs that occur 
+# before and after it. bisect_left uses a binary search so this is why the time complexities of these functions are O(logn)
 # See https://docs.python.org/3/library/bisect.html for full documentation on the bisect import
 ###
 
 class HawaiianDictionary:
     def __init__(self):
-        self.sayings = []
+        self.sayings = {}
+        self.sorted_keys = []
 
-    ### find_index creates a list of keys from all of the sayings present in the dict. bisect.bisect_left performs a binary search on the sorted list of keys
-    ### in order to find an index such that the list remains sorted alphabetically. It specifically returns the index for the leftmost occurance of 'saying'
-    def find_index(self, saying):
-        keys = [s['saying'] for s in self.sayings]
-        index = bisect.bisect_left(keys, saying)
-        return index
-    
     def member(self, saying):
-        index = self.find_index(saying)
-        if index < len(self.sayings) and self.sayings[index]['saying'] == saying:
-            return self.sayings[index]
-        return "Saying not in Dictionary"
-    
+        return self.sayings.get(saying, "Saying not in Dictionary")
+
     def first(self):
-        if self.sayings:            #returns first saying in dictionarty so long as there is at least 1 entry
-            return self.sayings[0]
+        if self.sorted_keys:
+            first_key = self.sorted_keys[0]
+            return {first_key: self.sayings[first_key]}
         return "Dictionary Empty"
-    
+
     def last(self):
-        if self.sayings:            #returns last saying in dictionarty so long as there is at least 1 entry
-            return self.sayings[-1]
-        return "Dictionary empty"
-    
+        if self.sorted_keys:
+            last_key = self.sorted_keys[-1]
+            return {last_key: self.sayings[last_key]}
+        return "Dictionary Empty"
+
     def predecessor(self, saying):
-        index = self.find_index(saying) #finds index for saying
-        if index == -1: #saying is not in dict
-            return "Saying not in dictionary"
-        elif index > 0: #saying in dictionary with predecessor
-            return self.sayings[index - 1]
-        else: #saying in dictionary but no predecessor
+        index = bisect.bisect_left(self.sorted_keys, saying)
+        if index == 0:
             return "First entry in dictionary; no predecessor"
+        elif saying in self.sayings:
+            predecessor_key = self.sorted_keys[index - 1]
+            return {predecessor_key: self.sayings[predecessor_key]}
+        return "Saying not in dictionary"
 
     def successor(self, saying):
-        index = self.find_index(saying)
-        if index == -1: #saying is not in dict
+        index = bisect.bisect_left(self.sorted_keys, saying)
+        if saying not in self.sayings:
             return "Saying not in dictionary"
-        elif index < len(self.sayings) - 1: #saying in dictionary with successor
-            return self.sayings[index + 1]
-        else: #saying in dictionary but no successor
-            return "Last entry in dictionary; no successor"
-    
+        elif index < len(self.sorted_keys) - 1:
+            successor_key = self.sorted_keys[index + 1]
+            return {successor_key: self.sayings[successor_key]}
+        return "Last entry in dictionary; no successor"
+
     def insert(self, saying, translation, explanation_non_english, explanation_english):
-        new_saying = { #sort components of new dictionary entry for insertion into list
-            'saying': saying,
+        if saying not in self.sayings:
+            bisect.insort_left(self.sorted_keys, saying)
+        self.sayings[saying] = {
             'translation': translation,
             'explanation_non_english': explanation_non_english,
             'explanation_english': explanation_english
         }
-        index = self.find_index(saying) #find sorted index for new entry
-        if index < len(self.sayings) and self.sayings[index]['saying'] == saying:
-            # Update existing saying
-            self.sayings[index] = new_saying
-        else:
-            # Insert new saying
-            self.sayings.insert(index, new_saying)
 
     def list_all_sayings(self):
-        if not self.sayings:
+        if not self.sorted_keys:
             print("No sayings found in the dictionary.")
             return
-        
+
         print("===== Hawaiian Sayings Dictionary =====")
-        for index, saying in enumerate(self.sayings, start=1): #Iterate through dictionary
-            print(f"   Saying: {saying['saying']}")
-            print(f"   Translation: {saying['translation']}")
-            print(f"   Explanation (Hawaiian): {saying['explanation_non_english']}")
-            print(f"   Explanation (English): {saying['explanation_english']}")
+        for saying in self.sorted_keys:
+            details = self.sayings[saying]
+            print(f"   Saying: {saying}")
+            print(f"   Translation: {details['translation']}")
+            print(f"   Explanation (Hawaiian): {details['explanation_non_english']}")
+            print(f"   Explanation (English): {details['explanation_english']}")
             print()
 
 
-       ### MeHua and WithWord programmed by Yuzuki Fujimoto
-       # This function searches through all sayings in the dictionary and returns those containing the given non-English word.
-       #It iterates through each saying and checks if the word is present in the saying field of each entry.
-       # If a saying contains the word, it is added to the sayings_containing_word list, which is then returned.
+    ### MeHua and WithWord programmed by Yuzuki Fujimoto
+    # This function searches through all sayings in the dictionary and returns those containing the given non-English word.
+    # It iterates through each saying and checks if the word is present in the saying field of each entry.
+    # If a saying contains the word, it is added to the sayings_containing_word list, which is then returned.
+    # MeHua searches for sayings containing a given non-English word by iterating through each entry in self.sayings and checking if the word appears in the 'saying' field.
+    # This function searches and returns all the matching sayings. However, its efficiency is moderate, operating with a time complexity of O(n) where n is the number of entries,
+    # and a space complexity  O(n) in worst-case scenario for every saying containing the word.
+    # The WithWord function searches for sayings containing a given English word in either the 'translation' or 'explanation_english' fields.
+    # Like MeHua, it iterates through each saying in self.sayings to see if the word appears in the specified fields, collecting and returning all matching sayings.
+    # This also operates with O(n) time complexity and a corresponding space complexity for smaller datasets but it could be even slower for bigger dictionaries with more sayings.
     def MeHua(self, word):
         sayings_containing_word = []
-        for saying in self.sayings:
-            if word in saying['saying']:
-                sayings_containing_word.append(saying)
+        for saying, details in self.sayings.items():
+            if word in saying:
+                sayings_containing_word.append({saying: details})
         return sayings_containing_word
-       #This function searches through all sayings in the dictionary and returns those containing the given English word in either the translation or the English explanation.
+
     def WithWord(self, word):
         sayings_containing_word = []
-        for saying in self.sayings:
-            if word in saying['translation'] or word in saying['explanation_english']:
-                sayings_containing_word.append(saying)
+        for saying, details in self.sayings.items():
+            if word in details['translation'] or word in details['explanation_english']:
+                sayings_containing_word.append({saying: details})
         return sayings_containing_word
 
 
