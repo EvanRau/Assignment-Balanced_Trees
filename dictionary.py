@@ -85,24 +85,23 @@ class HawaiianDictionary:
             print()
 
 
-      ### MeHua and WithWord programmed by Yuzuki Fujimoto
-       ### @todo complete code with explanations
+       ### MeHua and WithWord programmed by Yuzuki Fujimoto
        # This function searches through all sayings in the dictionary and returns those containing the given non-English word.
        #It iterates through each saying and checks if the word is present in the saying field of each entry.
        # If a saying contains the word, it is added to the sayings_containing_word list, which is then returned.
-       def MeHua(self, word):
-               sayings_containing_word = []
-               for saying in self.sayings:
-                   if word in saying['saying']:
-                       sayings_containing_word.append(saying)
-               return sayings_containing_word
+    def MeHua(self, word):
+        sayings_containing_word = []
+        for saying in self.sayings:
+            if word in saying['saying']:
+                sayings_containing_word.append(saying)
+        return sayings_containing_word
        #This function searches through all sayings in the dictionary and returns those containing the given English word in either the translation or the English explanation.
-           def WithWord(self, word):
-               sayings_containing_word = []
-               for saying in self.sayings:
-                   if word in saying['translation'] or word in saying['explanation_english']:
-                       sayings_containing_word.append(saying)
-               return sayings_containing_word
+    def WithWord(self, word):
+        sayings_containing_word = []
+        for saying in self.sayings:
+            if word in saying['translation'] or word in saying['explanation_english']:
+                sayings_containing_word.append(saying)
+        return sayings_containing_word
 
 
 ### Main code to prove functionality
@@ -164,11 +163,20 @@ db.insert(
 
 db.list_all_sayings()
 
+print("Predecessor Test")
 print(db.predecessor('Ola ka inoa.')) # Output should be 'Kālina ka pona, ‘a‘ohe hua o ka pu‘e, aia ka hua i ka lālā.'
 print()
+print("Successor Test")
 print(db.successor('Kālina ka pona, ‘a‘ohe hua o ka pu‘e, aia ka hua i ka lālā.')) # output should be 'Ola ka inoa.'
 print()
+print("First Test")
 print(db.first()) #output should be 'A‘ea‘e mōhala i luna o ke kukui.'
 print()
+print("Last Test")
 print(db.last()) #output should be 'Ola nā iwi.'
 print()
+print("MeHua Test")
+print(db.MeHua("Ola"))
+print()
+print("WithWord Test")
+print(db.WithWord("family"))
