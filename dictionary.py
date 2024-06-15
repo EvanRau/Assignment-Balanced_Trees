@@ -85,17 +85,24 @@ class HawaiianDictionary:
             print()
 
 
-    ### MeHua and WithWord programmed by Yuzuki Fujimoto
-    ### @todo complete code with explanations
-    def MeHua(self, word):
-        return None
-    
-    def WithWord(self, word):
-        return None
-
-
-
-
+      ### MeHua and WithWord programmed by Yuzuki Fujimoto
+       ### @todo complete code with explanations
+       # This function searches through all sayings in the dictionary and returns those containing the given non-English word.
+       #It iterates through each saying and checks if the word is present in the saying field of each entry.
+       # If a saying contains the word, it is added to the sayings_containing_word list, which is then returned.
+       def MeHua(self, word):
+               sayings_containing_word = []
+               for saying in self.sayings:
+                   if word in saying['saying']:
+                       sayings_containing_word.append(saying)
+               return sayings_containing_word
+       #This function searches through all sayings in the dictionary and returns those containing the given English word in either the translation or the English explanation.
+           def WithWord(self, word):
+               sayings_containing_word = []
+               for saying in self.sayings:
+                   if word in saying['translation'] or word in saying['explanation_english']:
+                       sayings_containing_word.append(saying)
+               return sayings_containing_word
 
 
 ### Main code to prove functionality
