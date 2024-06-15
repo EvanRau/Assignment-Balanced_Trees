@@ -11,7 +11,7 @@ import bisect
 # see the following link for more information on python dicts https://docs.python.org/3/tutorial/datastructures.html#dictionaries
 # In addtion to the dictionary, we also keep a sorted list of its keys that we update with each insertion. Doing this allows us to improve time complexity for first(), last(), predecessor(),
 # successor(), and listAllSayings at the cost of slowing down insert(). This improves the time complexity of first() and last() to O(1), list_all_sayings() to O(n), and predecessor() and successor() to O(logn)
-# consequently, insert()'s time complextiy goes up from O(1) to O(logn) since it has to utilize bisect's functions.
+# consequently, insert()'s time complextiy goes up from O(1) to O(logn) since it has to utilize bisect's functions to resort sorted_keys every time it is called.
 # Additionally, bisect is used in predecessor and successor in order to determine where its key exists in the sorted list of entries, allowing for us to locate the key pairs that occur 
 # before and after it. bisect_left uses a binary search so this is why the time complexities of these functions are O(logn)
 # See https://docs.python.org/3/library/bisect.html for full documentation on the bisect import
